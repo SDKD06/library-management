@@ -1,0 +1,72 @@
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: #1a2744;
+  position: fixed;
+  left: 0; top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 20px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  .logo-icon { font-size: 1.4rem; }
+}
+
+.btn-logout {
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  &:hover { background: #ef4444; color: white; border-color: #ef4444; }
+}
+nav {
+  padding: 16px 12px;
+  flex: 1;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    transition: all 0.2s;
+    svg { width: 18px; height: 18px; }
+    &:hover { background: rgba(255,255,255,0.08); color: white; }
+    &.active { background: #2563eb; color: white; font-weight: 600; }
+  }
+}
+
+.quick-actions {
+  padding: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+}
+
+.btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; font-family: inherit; }
+.btn-success { background: #10b981; color: white; &:hover { background: #059669; } }
+.btn-primary { background: #2563eb; color: white; &:hover { background: #1d4ed8; } }
+.btn-orange { background: #f59e0b; color: white; &:hover { background: #d97706; } }

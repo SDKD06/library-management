@@ -1,0 +1,181 @@
+<div class="page-header">
+  <h1>Reports</h1>
+  <p class="subtitle">Overview of your library activity</p>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-cards">
+  <div class="summary-card blue">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ totalBooks }}</strong>
+      <span>Total Books</span>
+    </div>
+  </div>
+  <div class="summary-card purple">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ totalMembers }}</strong>
+      <span>Total Members</span>
+    </div>
+  </div>
+  <div class="summary-card green">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ completedTransactions }}</strong>
+      <span>Completed Returns</span>
+    </div>
+  </div>
+  <div class="summary-card orange">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ activeTransactions }}</strong>
+      <span>Currently Borrowed</span>
+    </div>
+  </div>
+  <div class="summary-card red">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ overdueTransactions }}</strong>
+      <span>Overdue Books</span>
+    </div>
+  </div>
+  <div class="summary-card teal">
+    <div class="summary-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+        <rect x="9" y="3" width="6" height="4" rx="2"/>
+      </svg>
+    </div>
+    <div>
+      <strong>{{ totalTransactions }}</strong>
+      <span>Total Transactions</span>
+    </div>
+  </div>
+</div>
+
+<div class="reports-grid">
+  <!-- Top Borrowed Books -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Most Borrowed Books</h3>
+    </div>
+    <div *ngIf="topBooks.length === 0" class="empty">No data available</div>
+    <div class="top-list" *ngFor="let item of topBooks; let i = index">
+      <div class="top-rank" [ngClass]="'rank-' + (i+1)">{{ i + 1 }}</div>
+      <div class="top-info">
+        <p class="top-title">{{ item.book.title }}</p>
+        <p class="top-sub">{{ item.book.author }}</p>
+      </div>
+      <div class="top-count">
+        <span>{{ item.count }}</span>
+        <small>borrows</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Active Members -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Most Active Members</h3>
+    </div>
+    <div *ngIf="topMembers.length === 0" class="empty">No data available</div>
+    <div class="top-list" *ngFor="let item of topMembers; let i = index">
+      <div class="top-rank" [ngClass]="'rank-' + (i+1)">{{ i + 1 }}</div>
+      <div class="top-info">
+        <p class="top-title">{{ item.member.name }}</p>
+        <p class="top-sub">{{ item.count }} transactions</p>
+      </div>
+      <div class="top-count">
+        <span>{{ item.count }}</span>
+        <small>books</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue List -->
+  <div class="card full-width">
+    <div class="card-header">
+      <h3>Overdue Books</h3>
+      <span class="overdue-count" *ngIf="overdueList.length > 0">{{ overdueList.length }} overdue</span>
+    </div>
+    <div *ngIf="overdueList.length === 0" class="empty">No overdue books</div>
+    <table *ngIf="overdueList.length > 0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Book</th>
+          <th>Member</th>
+          <th>Borrow Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of overdueList; let i = index">
+          <td><span class="badge">{{ i + 1 }}</span></td>
+          <td><strong>{{ t.book.title }}</strong></td>
+          <td class="muted">{{ t.member.name }}</td>
+          <td class="muted">{{ t.borrowDate }}</td>
+          <td><span class="status-badge overdue">OVERDUE</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- All Transactions -->
+  <div class="card full-width">
+    <div class="card-header">
+      <h3>All Transactions</h3>
+    </div>
+    <div *ngIf="allTransactions.length === 0" class="empty">No transactions found</div>
+    <table *ngIf="allTransactions.length > 0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Book</th>
+          <th>Member</th>
+          <th>Borrow Date</th>
+          <th>Return Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of allTransactions; let i = index">
+          <td><span class="badge">{{ i + 1 }}</span></td>
+          <td><strong>{{ t.book.title }}</strong></td>
+          <td class="muted">{{ t.member.name }}</td>
+          <td class="muted">{{ t.borrowDate }}</td>
+          <td class="muted">{{ t.returnDate ?? '-' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="t.status.toLowerCase()">{{ t.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

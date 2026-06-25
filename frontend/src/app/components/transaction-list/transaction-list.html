@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h1>Transactions</h1>
+  <button class="btn btn-primary" (click)="openAdd()">+ Borrow Book</button>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Book</th>
+        <th>Member</th>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of transactions; let i = index">
+        <td><span class="badge">{{ i + 1 }}</span></td>
+        <td><strong>{{ t.book.title }}</strong></td>
+        <td class="muted">{{ t.member.name }}</td>
+        <td class="muted">{{ t.borrowDate }}</td>
+        <td class="muted">{{ t.returnDate ?? '-' }}</td>
+        <td><span class="status-badge" [ngClass]="getStatusClass(t.status)">{{ t.status }}</span></td>
+        <td>
+          <button class="btn btn-success" *ngIf="t.status === 'ACTIVE'" (click)="returnBook(t)">Return</button>
+          <button class="btn btn-danger" (click)="delete(t.id!)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="transactions.length === 0">
+        <td colspan="7" class="empty">No transactions found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal">
+    <h2>Borrow a Book</h2>
+    <div class="form-group">
+      <label>Book</label>
+      <select [(ngModel)]="currentTransaction.book.id">
+        <option value="0" disabled>Select a book</option>
+        <option *ngFor="let b of books" [value]="b.id">{{ b.title }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Member</label>
+      <select [(ngModel)]="currentTransaction.member.id">
+        <option value="0" disabled>Select a member</option>
+        <option *ngFor="let m of members" [value]="m.id">{{ m.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Borrow Date</label>
+      <input type="date" [(ngModel)]="currentTransaction.borrowDate">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Confirm Borrow</button>
+    </div>
+  </div>
+</div>

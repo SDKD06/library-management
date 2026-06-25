@@ -1,0 +1,299 @@
+// Matched to the LIBRARY MS dashboard: gradient stat cards, white rounded
+// panels, and a ranked list styled like "Most Borrowed Books".
+
+.predictor-page {
+  padding: 2rem 2.25rem;
+  max-width: 1100px;
+  color: #1e293b;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.page-head {
+  margin-bottom: 1.75rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0f1f36;
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+    color: #64748b;
+    font-size: 0.98rem;
+  }
+}
+
+/* ---------- gradient summary cards ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: 16px;
+  color: #fff;
+  box-shadow: 0 10px 25px -12px rgba(15, 31, 54, 0.4);
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__label {
+    font-size: 0.82rem;
+    opacity: 0.9;
+    margin-top: 0.15rem;
+  }
+
+  &--blue  { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+  &--amber { background: linear-gradient(135deg, #f59e0b, #ea8a04); }
+  &--green { background: linear-gradient(135deg, #10b981, #059669); }
+}
+
+/* ---------- white panels ---------- */
+.panel {
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 31, 54, 0.04);
+
+  &__title {
+    margin: 0 0 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f1f36;
+  }
+}
+
+/* ---------- controls ---------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 200px;
+
+  span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  input {
+    padding: 0.65rem 0.8rem;
+    border: 1px solid #d8dfe8;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    color: #1e293b;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+  }
+
+  &--sm {
+    flex: 0 0 110px;
+    min-width: 110px;
+  }
+}
+
+.controls__actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn {
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.06s, box-shadow 0.15s, background 0.15s;
+
+  &:active { transform: translateY(1px); }
+
+  &--primary {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 6px 16px -6px rgba(37, 99, 235, 0.6);
+    &:hover { background: #1d4ed8; }
+  }
+
+  &--ghost {
+    background: #f1f5f9;
+    color: #475569;
+    &:hover { background: #e2e8f0; }
+  }
+}
+
+/* ---------- states ---------- */
+.state {
+  color: #64748b;
+  padding: 1.5rem 0;
+  text-align: center;
+
+  &--error { color: #dc2626; }
+}
+
+/* ---------- ranked list ---------- */
+.rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rank-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child { border-bottom: none; }
+
+  &__num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    &--top {
+      background: #fef3c7;
+      color: #d97706;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    color: #0f1f36;
+    font-size: 1rem;
+  }
+
+  &__meta {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin: 0.2rem 0 0.3rem;
+  }
+
+  &__reason {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 0.6rem;
+  }
+
+  &__score {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    min-width: 56px;
+  }
+
+  &__score-num {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #2563eb;
+    line-height: 1;
+  }
+
+  &__score-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-top: 0.15rem;
+  }
+}
+
+/* ---------- pill badge (mirrors the ACTIVE status pill) ---------- */
+.pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #16a34a;
+  text-transform: uppercase;
+
+  &--out {
+    background: #e0ecff;
+    color: #2563eb;
+  }
+}
+
+/* ---------- score bar ---------- */
+.bar {
+  height: 7px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 420px;
+
+  &__fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #60a5fa, #2563eb);
+  }
+}
+
+@media (max-width: 640px) {
+  .predictor-page { padding: 1.25rem; }
+  .rank-row__score { min-width: 48px; }
+}

@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1>Books</h1>
+  <div class="header-actions">
+    <input class="search-input" placeholder="Search books..." [(ngModel)]="searchTerm">
+    <button class="btn btn-primary" (click)="openAdd()">+ Add Book</button>
+  </div>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genre</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let book of filteredBooks; let i = index">
+        <td><span class="badge">{{ i + 1 }}</span></td>
+        <td><strong>{{ book.title }}</strong></td>
+        <td class="muted">{{ book.author }}</td>
+        <td><span class="genre-badge">{{ book.genre }}</span></td>
+        <td>
+          <button class="btn btn-ghost" (click)="openEdit(book)">Edit</button>
+          <button class="btn btn-danger" (click)="delete(book.id!)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="filteredBooks.length === 0">
+        <td colspan="5" class="empty">No books found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal">
+    <h2>{{ isEditing ? 'Edit Book' : 'Add New Book' }}</h2>
+    <div class="form-group">
+      <label>Title</label>
+      <input [(ngModel)]="currentBook.title" placeholder="Enter book title">
+    </div>
+    <div class="form-group">
+      <label>Author</label>
+      <input [(ngModel)]="currentBook.author" placeholder="Enter author name">
+    </div>
+    <div class="form-group">
+      <label>Genre</label>
+      <select [(ngModel)]="currentBook.genre">
+        <option value="" disabled>Select genre</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Science">Science</option>
+        <option value="History">History</option>
+        <option value="Romance">Romance</option>
+        <option value="Mystery">Mystery</option>
+        <option value="Biography">Biography</option>
+        <option value="Technology">Technology</option>
+        <option value="Philosophy">Philosophy</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">{{ isEditing ? 'Update' : 'Add Book' }}</button>
+    </div>
+  </div>
+</div>

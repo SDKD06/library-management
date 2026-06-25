@@ -1,0 +1,94 @@
+<div class="predictor-page">
+  <header class="page-head">
+    <h1>Book Demand Predictor</h1>
+    <p>Forecasts which titles are most likely to be borrowed next</p>
+  </header>
+
+  @if (predictions().length > 0) {
+    <section class="stat-grid">
+      <article class="stat stat--blue">
+        <div class="stat__icon">📈</div>
+        <div class="stat__body">
+          <span class="stat__value">{{ topPick()?.title }}</span>
+          <span class="stat__label">Top Predicted Pick</span>
+        </div>
+      </article>
+
+      <article class="stat stat--amber">
+        <div class="stat__icon">🔥</div>
+        <div class="stat__body">
+          <span class="stat__value">{{ hottestGenre() ?? '—' }}</span>
+          <span class="stat__label">Hottest Genre</span>
+        </div>
+      </article>
+
+      <article class="stat stat--green">
+        <div class="stat__icon">✅</div>
+        <div class="stat__body">
+          <span class="stat__value">{{ availableCount() }}</span>
+          <span class="stat__label">Available Right Now</span>
+        </div>
+      </article>
+    </section>
+  }
+
+  <section class="panel">
+    <div class="controls">
+      <label class="field">
+        <span>Focus genres (optional, comma-separated)</span>
+        <input type="text" [(ngModel)]="genreInput" placeholder="e.g. Fiction, Science, History" />
+      </label>
+
+      <label class="field field--sm">
+        <span>Show top</span>
+        <input type="number" [(ngModel)]="limit" min="1" max="50" />
+      </label>
+
+      <div class="controls__actions">
+        <button class="btn btn--primary" (click)="runPrediction()">Predict</button>
+        <button class="btn btn--ghost" (click)="clearFilter()">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Predicted Demand</h2>
+
+    @if (loading()) {
+      <p class="state">Crunching the numbers…</p>
+    } @else if (error()) {
+      <p class="state state--error">{{ error() }}</p>
+    } @else if (predictions().length === 0) {
+      <p class="state">No predictions yet — add some borrowing history first.</p>
+    } @else {
+      <ol class="rank-list">
+        @for (p of predictions(); track p.bookId) {
+          <li class="rank-row">
+            <div class="rank-row__num" [class.rank-row__num--top]="$index === 0">
+              {{ $index + 1 }}
+            </div>
+
+            <div class="rank-row__info">
+              <div class="rank-row__title">
+                {{ p.title }}
+                <span class="pill" [class.pill--out]="!p.available">
+                  {{ p.available ? 'Available' : 'On loan' }}
+                </span>
+              </div>
+              <div class="rank-row__meta">{{ p.author }} · {{ p.genre }}</div>
+              <div class="rank-row__reason">{{ p.reason }}</div>
+              <div class="bar">
+                <div class="bar__fill" [style.width.%]="p.score"></div>
+              </div>
+            </div>
+
+            <div class="rank-row__score">
+              <span class="rank-row__score-num">{{ p.score }}</span>
+              <span class="rank-row__score-label">score</span>
+            </div>
+          </li>
+        }
+      </ol>
+    }
+  </section>
+</div>

@@ -1,0 +1,98 @@
+<div class="page-header">
+  <h1>Library Dashboard</h1>
+</div>
+
+<div class="stat-cards">
+  <div class="stat-card blue">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+    </svg>
+    <strong>{{ totalBooks }}</strong>
+    <span>Total Books</span>
+  </div>
+  <div class="stat-card green">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <strong>{{ totalBooks - borrowedBooks }}</strong>
+    <span>Available Books</span>
+  </div>
+  <div class="stat-card orange">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+    </svg>
+    <strong>{{ borrowedBooks }}</strong>
+    <span>Books Borrowed</span>
+  </div>
+  <div class="stat-card purple">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+    </svg>
+    <strong>{{ totalMembers }}</strong>
+    <span>Total Members</span>
+  </div>
+  <div class="stat-card teal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <strong>{{ activeMembers }}</strong>
+    <span>Active Members</span>
+  </div>
+  <div class="stat-card red">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <strong>{{ overdueBooks }}</strong>
+    <span>Overdue Books</span>
+  </div>
+</div>
+
+<div class="dashboard-bottom">
+  <div class="card recent-transactions">
+    <div class="card-header">
+      <h3>Recent Transactions</h3>
+      <a routerLink="/transactions" class="btn-view-all">View All</a>
+    </div>
+    <div class="transaction-list">
+      <div class="transaction-item" *ngFor="let t of recentTransactions">
+        <div class="transaction-icon" [ngClass]="t.status.toLowerCase()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+          </svg>
+        </div>
+        <div class="transaction-info">
+          <p class="transaction-title">{{ t.member.name }} - {{ t.book.title }}</p>
+          <p class="transaction-date">{{ t.status === 'COMPLETED' ? 'Return' : 'Borrow' }} - {{ t.borrowDate }}</p>
+        </div>
+        <span class="status-badge" [ngClass]="t.status.toLowerCase()">{{ t.status }}</span>
+      </div>
+      <div *ngIf="recentTransactions.length === 0" class="empty-transactions">
+        No recent transactions
+      </div>
+    </div>
+  </div>
+
+  <div class="card book-categories">
+    <div class="card-header">
+      <h3>Book Categories</h3>
+    </div>
+    <div class="category-list">
+      <div class="category-item" *ngFor="let cat of categories">
+        <div class="category-label">
+          <span>{{ cat.name }}</span>
+          <span class="category-count">{{ cat.count }}</span>
+        </div>
+        <div class="category-bar">
+          <div class="category-fill" [style.width.%]="cat.percentage" [style.background]="cat.color"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
