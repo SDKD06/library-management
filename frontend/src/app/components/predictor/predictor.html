@@ -51,6 +51,71 @@
     </div>
   </section>
 
+  @if (predictions().length > 0) {
+    <section class="panel">
+      <h2 class="panel__title">Demand Forecast</h2>
+
+      <svg
+        class="chart"
+        [attr.viewBox]="'0 0 ' + chart().w + ' ' + chart().h"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Predicted demand score per book"
+      >
+        <!-- gridlines + y-axis labels -->
+        @for (t of chart().ticks; track t.v) {
+          <line
+            class="chart__grid"
+            [attr.x1]="chart().padL"
+            [attr.x2]="chart().w - chart().padR"
+            [attr.y1]="t.y"
+            [attr.y2]="t.y"
+          />
+          <text class="chart__axis" [attr.x]="chart().padL - 8" [attr.y]="t.y + 4" text-anchor="end">
+            {{ t.v }}
+          </text>
+        }
+
+        <!-- bars -->
+        @for (b of chart().bars; track b.title) {
+          <rect
+            class="chart__bar"
+            [class.chart__bar--top]="b.top"
+            [attr.x]="b.x"
+            [attr.y]="b.y"
+            [attr.width]="b.w"
+            [attr.height]="b.h"
+            [attr.fill]="b.color"
+            rx="4"
+          >
+            <title>{{ b.title }} · {{ b.genre }} · score {{ b.score }}</title>
+          </rect>
+
+          <text class="chart__value" [attr.x]="b.labelX" [attr.y]="b.y - 6" text-anchor="middle">
+            {{ b.score }}
+          </text>
+
+          <text
+            class="chart__label"
+            [attr.x]="b.labelX"
+            [attr.y]="chart().baselineY + 18"
+            text-anchor="middle"
+          >
+            {{ b.label }}
+          </text>
+        }
+      </svg>
+
+      <div class="chart-legend">
+        @for (l of chart().legend; track l.name) {
+          <span class="chart-legend__item">
+            <span class="chart-legend__swatch" [style.background]="l.color"></span>{{ l.name }}
+          </span>
+        }
+      </div>
+    </section>
+  }
+
   <section class="panel">
     <h2 class="panel__title">Predicted Demand</h2>
 
@@ -92,3 +157,4 @@
     }
   </section>
 </div>
+

@@ -1,5 +1,7 @@
 // Matched to the LIBRARY MS dashboard: gradient stat cards, white rounded
 // panels, and a ranked list styled like "Most Borrowed Books".
+// Matched to the LIBRARY MS dashboard: gradient stat cards, white rounded
+// panels, and a ranked list styled like "Most Borrowed Books".
 
 .predictor-page {
   padding: 2rem 2.25rem;
@@ -296,4 +298,72 @@
 @media (max-width: 640px) {
   .predictor-page { padding: 1.25rem; }
   .rank-row__score { min-width: 48px; }
+}
+
+/* ---------- demand forecast chart (plain SVG) ---------- */
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  &__grid {
+    stroke: #eef2f7;
+    stroke-width: 1;
+  }
+
+  &__axis {
+    fill: #94a3b8;
+    font-size: 12px;
+    font-family: inherit;
+  }
+
+  &__bar {
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &--top {
+      stroke: #0f1f36;
+      stroke-width: 1.5;
+    }
+  }
+
+  &__value {
+    fill: #0f1f36;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+  }
+
+  &__label {
+    fill: #64748b;
+    font-size: 11px;
+    font-family: inherit;
+  }
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #f1f5f9;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: #475569;
+  }
+
+  &__swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
 }
