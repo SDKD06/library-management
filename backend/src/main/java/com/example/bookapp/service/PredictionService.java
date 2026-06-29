@@ -1,24 +1,16 @@
 package com.example.bookapp.service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.example.bookapp.dto.BookPrediction;
 import com.example.bookapp.entity.Book;
 import com.example.bookapp.entity.Transaction;
 import com.example.bookapp.repository.BookRepository;
 import com.example.bookapp.repository.TransactionRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Predicts which books are most likely to be borrowed next.
@@ -156,6 +148,89 @@ public class PredictionService {
         return String.join("; ", parts);
     }
 
+    /**
+     * Personalized recommendations for one member.
+     *
+     * Blends the member's own taste (which genres they borrow most, recency-weighted)
+     * with each book's overall demand, and never recommends a book they've already read.
+     *   score = 0.65 * member's affinity for the book's genre
+     *         + 0.35 * how popular that genre is library-wide
+     */
+    public List<BookPrediction> recommendForMember(Long memberId, int limit) {
+        List<Book> books = bookRepository.findAll();
+        List<Transaction> transactions = transactionRepository.findAll();
+        LocalDate today = LocalDate.now();
+
+        Map<String, Double> memberGenreAffinity = new HashMap<>();
+        Map<String, Double> genreTrend = new HashMap<>();
+        Map<Long, Long> recentBorrows = new HashMap<>();
+        Set<Long> alreadyBorrowed = new HashSet<>();
+        Set<Long> onLoanBookIds = new HashSet<>();
+
+        for (Transaction t : transactions) {
+            Book b = bookOf(t);
+            if (b == null) continue;
+            if (isOpenLoan(t)) onLoanBookIds.add(b.getId());
+
+            LocalDate when = borrowDateOf(t);
+            double weight = 1.0;
+            if (when != null) {
+                long age = ChronoUnit.DAYS.between(when, today);
+                if (age < 0) age = 0;
+                weight = Math.pow(0.5, age / HALF_LIFE_DAYS);
+                if (age <= RECENT_WINDOW_DAYS) recentBorrows.merge(b.getId(), 1L, Long::sum);
+            }
+
+            String g = genreOf(b);
+            if (g != null) genreTrend.merge(g, weight, Double::sum);
+
+            if (memberId.equals(memberIdOf(t))) {
+                alreadyBorrowed.add(b.getId());
+                if (g != null) memberGenreAffinity.merge(g, weight, Double::sum);
+            }
+        }
+
+        double maxAffinity   = memberGenreAffinity.values().stream().mapToDouble(d -> d).max().orElse(1.0);
+        double maxGenreTrend = genreTrend.values().stream().mapToDouble(d -> d).max().orElse(1.0);
+        if (maxAffinity   == 0) maxAffinity   = 1.0;
+        if (maxGenreTrend == 0) maxGenreTrend = 1.0;
+
+        List<BookPrediction> results = new ArrayList<>();
+        for (Book b : books) {
+            if (alreadyBorrowed.contains(b.getId())) continue; // don't recommend what they've read
+
+            String g = genreOf(b);
+            double affinity      = (g == null ? 0.0 : memberGenreAffinity.getOrDefault(g, 0.0)) / maxAffinity;
+            double genreMomentum = (g == null ? 0.0 : genreTrend.getOrDefault(g, 0.0)) / maxGenreTrend;
+
+            double raw = 0.65 * affinity + 0.35 * genreMomentum;
+            double score = Math.round(raw * 1000.0) / 10.0;
+            long recent = recentBorrows.getOrDefault(b.getId(), 0L);
+
+            results.add(new BookPrediction(
+                    b.getId(), b.getTitle(), b.getAuthor(), g,
+                    score, recent, !onLoanBookIds.contains(b.getId()),
+                    buildRecommendationReason(g, affinity, genreMomentum)
+            ));
+        }
+
+        return results.stream()
+                .sorted(Comparator.comparingDouble(BookPrediction::getScore).reversed()
+                        .thenComparing(p -> !p.isAvailable()))
+                .limit(limit <= 0 ? 6 : limit)
+                .collect(Collectors.toList());
+    }
+
+    private String buildRecommendationReason(String genre, double affinity, double genreMomentum) {
+        if (genre != null && affinity > 0.0) {
+            return "Because you enjoy " + genre + " books";
+        }
+        if (genre != null && genreMomentum > 0.5) {
+            return genre + " is popular right now";
+        }
+        return "A fresh pick to explore";
+    }
+
     // ---------------------------------------------------------------------
     // ENTITY ADAPTERS - matched to your Book / Transaction entities.
     // ---------------------------------------------------------------------
@@ -163,4 +238,5 @@ public class PredictionService {
     private LocalDate borrowDateOf(Transaction t) { return t.getBorrowDate(); }
     private String genreOf(Book b)                { return b.getGenre(); }
     private boolean isOpenLoan(Transaction t)     { return t.getReturnDate() == null; } // not yet returned => currently on loan
+    private Long memberIdOf(Transaction t)        { return t.getMember() == null ? null : t.getMember().getId(); }
 }

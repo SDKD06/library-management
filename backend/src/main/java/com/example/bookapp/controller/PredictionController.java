@@ -1,17 +1,11 @@
 package com.example.bookapp.controller;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.bookapp.dto.BookPrediction;
 import com.example.bookapp.service.PredictionService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/predictions") // CORS handled globally in SecurityConfig, so no @CrossOrigin here
@@ -41,6 +35,16 @@ public class PredictionController {
     public List<BookPrediction> predict(@RequestBody PredictionRequest req) {
         int limit = req.getLimit() == 0 ? 10 : req.getLimit();
         return predictionService.predict(req.getBookIds(), req.getGenres(), limit);
+    }
+
+    /**
+     * Personalized recommendations for one member.
+     * GET /predictions/member/3?limit=6
+     */
+    @GetMapping("/member/{memberId}")
+    public List<BookPrediction> forMember(@PathVariable Long memberId,
+                                          @RequestParam(defaultValue = "6") int limit) {
+        return predictionService.recommendForMember(memberId, limit);
     }
 
     public static class PredictionRequest {

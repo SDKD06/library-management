@@ -1,0 +1,83 @@
+<div class="page">
+  <header class="page-head">
+    <h1>Reservations</h1>
+    <p>Members request books; a librarian approves or rejects each request.</p>
+  </header>
+
+  <section class="panel">
+    <h2 class="panel__title">New Request</h2>
+    <div class="request-form">
+      <label class="field">
+        <span>Book</span>
+        <select [(ngModel)]="selectedBookId">
+          <option [ngValue]="null" disabled>Select a book</option>
+          @for (b of books(); track b.id) {
+            <option [ngValue]="b.id">{{ b.title }} — {{ b.author }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Member</span>
+        <select [(ngModel)]="selectedMemberId">
+          <option [ngValue]="null" disabled>Select a member</option>
+          @for (m of members(); track m.id) {
+            <option [ngValue]="m.id">{{ m.name }}</option>
+          }
+        </select>
+      </label>
+
+      <button class="btn btn--primary" (click)="submitRequest()">Request Book</button>
+    </div>
+    @if (error()) {
+      <p class="state state--error">{{ error() }}</p>
+    }
+  </section>
+
+  <section class="panel">
+    <div class="panel__head">
+      <h2 class="panel__title">All Requests</h2>
+      @if (pendingCount() > 0) {
+        <span class="badge-count">{{ pendingCount() }} pending</span>
+      }
+    </div>
+
+    @if (loading()) {
+      <p class="state">Loading…</p>
+    } @else if (reservations().length === 0) {
+      <p class="state">No reservations yet.</p>
+    } @else {
+      <table class="grid">
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Member</th>
+            <th>Requested</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of reservations(); track r.id) {
+            <tr>
+              <td class="strong">{{ r.book.title }}</td>
+              <td>{{ r.member.name }}</td>
+              <td class="muted">{{ r.requestDate }}</td>
+              <td>
+                <span class="pill" [ngClass]="r.status.toLowerCase()">{{ r.status }}</span>
+              </td>
+              <td>
+                @if (r.status === 'PENDING') {
+                  <button class="btn btn--sm btn--success" (click)="approve(r)">Approve</button>
+                  <button class="btn btn--sm btn--danger" (click)="reject(r)">Reject</button>
+                } @else {
+                  <span class="muted">—</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

@@ -1,0 +1,63 @@
+<div class="page">
+  <header class="page-head">
+    <h1>📖 Personalized Recommendations</h1>
+    <p>Suggests books for a member based on their borrowing history and favourite genres.</p>
+  </header>
+
+  <section class="panel">
+    <div class="picker">
+      <label class="field">
+        <span>Choose a member</span>
+        <select [(ngModel)]="selectedMemberId">
+          <option [ngValue]="null" disabled>Select a member</option>
+          @for (m of members(); track m.id) {
+            <option [ngValue]="m.id">{{ m.name }}</option>
+          }
+        </select>
+      </label>
+      <button class="btn btn--primary" (click)="recommend()">Get Recommendations</button>
+    </div>
+    @if (error()) {
+      <p class="state state--error">{{ error() }}</p>
+    }
+  </section>
+
+  @if (hasSearched()) {
+    <section class="panel">
+      <h2 class="panel__title">
+        @if (selectedMemberName) {
+          Recommended for {{ selectedMemberName }}
+        } @else {
+          Recommendations
+        }
+      </h2>
+
+      @if (loading()) {
+        <p class="state">Finding the best picks…</p>
+      } @else if (recommendations().length === 0) {
+        <p class="state">No recommendations available yet — this member needs some borrowing history first.</p>
+      } @else {
+        <div class="rec-grid">
+          @for (r of recommendations(); track r.bookId) {
+            <article class="rec-card">
+              <div class="rec-card__top">
+                <span class="rec-card__title">{{ r.title }}</span>
+                <span class="pill" [class.pill--out]="!r.available">
+                  {{ r.available ? 'Available' : 'On loan' }}
+                </span>
+              </div>
+              <div class="rec-card__meta">{{ r.author }} · {{ r.genre }}</div>
+              <div class="rec-card__reason">{{ r.reason }}</div>
+              <div class="rec-card__match">
+                <div class="rec-card__bar">
+                  <div class="rec-card__fill" [style.width.%]="r.score"></div>
+                </div>
+                <span class="rec-card__score">{{ r.score }}% match</span>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  }
+</div>

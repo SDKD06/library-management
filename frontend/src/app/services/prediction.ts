@@ -29,4 +29,9 @@ export class Prediction {
   predict(payload: { bookIds?: number[]; genres?: string[]; limit?: number }): Observable<BookPrediction[]> {
     return this.http.post<BookPrediction[]>(this.base, payload);
   }
+
+  /** Personalized recommendations for one member. */
+  recommendForMember(memberId: number, limit = 6): Observable<BookPrediction[]> {
+    return this.http.get<BookPrediction[]>(`${this.base}/member/${memberId}?limit=${limit}`);
+  }
 }

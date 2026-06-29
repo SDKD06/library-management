@@ -1,0 +1,64 @@
+<div class="page">
+  <header class="page-head">
+    <h1>Fines</h1>
+    <p>Overdue books accrue a ₹5/day fine. Generate fines, then collect or waive them.</p>
+  </header>
+
+  <section class="stat-row">
+    <article class="stat stat--red">
+      <span class="stat__value">₹{{ unpaidTotal() }}</span>
+      <span class="stat__label">Outstanding (Unpaid)</span>
+    </article>
+    <article class="stat stat--green">
+      <span class="stat__value">₹{{ collectedTotal() }}</span>
+      <span class="stat__label">Collected (Paid)</span>
+    </article>
+    <button class="btn btn--primary stat__action" (click)="generate()">Generate Fines</button>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">All Fines</h2>
+
+    @if (loading()) {
+      <p class="state">Loading…</p>
+    } @else if (error()) {
+      <p class="state state--error">{{ error() }}</p>
+    } @else if (fines().length === 0) {
+      <p class="state">No fines yet. Click "Generate Fines" to create them from overdue books.</p>
+    } @else {
+      <table class="grid">
+        <thead>
+          <tr>
+            <th>Book</th>
+            <th>Member</th>
+            <th>Days Overdue</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (f of fines(); track f.id) {
+            <tr>
+              <td class="strong">{{ f.transaction.book.title }}</td>
+              <td>{{ f.transaction.member.name }}</td>
+              <td>{{ f.daysOverdue }}</td>
+              <td class="strong">₹{{ f.amount }}</td>
+              <td>
+                <span class="pill" [ngClass]="f.status.toLowerCase()">{{ f.status }}</span>
+              </td>
+              <td>
+                @if (f.status === 'UNPAID') {
+                  <button class="btn btn--sm btn--success" (click)="pay(f)">Mark Paid</button>
+                  <button class="btn btn--sm btn--ghost" (click)="waive(f)">Waive</button>
+                } @else {
+                  <span class="muted">—</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>
