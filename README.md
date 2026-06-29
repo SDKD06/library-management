@@ -202,8 +202,7 @@ You can also focus on specific genres to bias the forecast toward what you care 
 
 ## 👤 Author
 
-_Add your name / GitHub handle here._
-
+SDKD06
 ---
 
 ## 📄 License
